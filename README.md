@@ -26,5 +26,5 @@ On a windows computer, you should be able to double-click on the file
 launch the app from the command line like this:
 ```
 $ cd Path/To/ProgramFolder
-$ java -jar Cyanos Planet Factory.jar
+$ java -jar "Cyanos Planet Factory.jar"
 ```
