@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="160.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="hall.collin.christopher.cpf.ProgressScreenController">
+  <children>
+    <VBox prefHeight="593.0" prefWidth="995.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <Label id="title" style="-fx-font-size: 125%; -fx-font-weight: bold;" text="Computation in progress, this may take several minutes..." />
+        <Separator prefWidth="200.0" />
+        <Label fx:id="taskNameLabel" text="Task Name" />
+        <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="568.0" progress="0.0" VBox.vgrow="ALWAYS" />
+        <AnchorPane prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="SOMETIMES">
+          <children>
+            <Button fx:id="cancelButton" contentDisplay="CENTER" mnemonicParsing="false" text="Cancel" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+          </children>
+        </AnchorPane>
+      </children>
+    </VBox>
+  </children>
+  <padding>
+    <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+  </padding>
+</AnchorPane>

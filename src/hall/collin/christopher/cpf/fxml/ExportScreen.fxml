@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="-1.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="hall.collin.christopher.cpf.ExportScreenController">
+  <children>
+    <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <Label style="-fx-font-weight: bold; -fx-font-size: 150%;" text="Map Export" />
+        <Separator prefWidth="200.0" />
+        <HBox prefHeight="-1.0" prefWidth="200.0">
+          <children>
+            <Label text="Filename:" />
+            <TextField fx:id="filepathField" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Button fx:id="browseButton" mnemonicParsing="false" text="Browse..." />
+          </children>
+        </HBox>
+        <Separator prefWidth="200.0" />
+        <Label id="nameLAbel" fx:id="nameLabel" style="-fx-font-size: 125%;" text="&lt;World Name&gt;" />
+        <HBox prefHeight="-1.0" prefWidth="200.0">
+          <children>
+            <VBox minHeight="200.0" prefHeight="200.0" prefWidth="100.0" spacing="4.0" HBox.hgrow="ALWAYS">
+              <children>
+                <Label style="-fx-font-weight: bold;" text="Options" />
+                <HBox prefHeight="-1.0" prefWidth="200.0">
+                  <children>
+                    <Label text="Size" />
+                    <TextField fx:id="sizeField" prefWidth="200.0" />
+                    <Label text="px" />
+                  </children>
+                </HBox>
+                <HBox prefHeight="-1.0" prefWidth="200.0">
+                  <children>
+                    <Label text="Map Coloration:" />
+                    <RadioButton fx:id="radioButton_vegetation" mnemonicParsing="false" text="Vegetation Color" />
+                    <RadioButton id="radioButton_vegetation" fx:id="radioButton_biome" mnemonicParsing="false" text="Biomes" />
+                  </children>
+                </HBox>
+                <CheckBox fx:id="landShadingCheckbox" mnemonicParsing="false" text="Landscape Shading" />
+                <CheckBox fx:id="oceanShadingCheckbox" mnemonicParsing="false" text="Underwater Landscape Shading" />
+                <CheckBox fx:id="labelsCheckbox" mnemonicParsing="false" text="Draw Labels" />
+              </children>
+              <padding>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+              </padding>
+            </VBox>
+          </children>
+        </HBox>
+        <Separator prefWidth="200.0" />
+        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+          <children>
+            <Button fx:id="saveButton" layoutY="0.0" mnemonicParsing="false" text="Export" AnchorPane.rightAnchor="0.0" />
+          </children>
+        </AnchorPane>
+      </children>
+      <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+      </padding>
+    </VBox>
+  </children>
+</AnchorPane>
