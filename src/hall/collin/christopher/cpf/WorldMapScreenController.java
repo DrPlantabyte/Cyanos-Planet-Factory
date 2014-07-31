@@ -162,6 +162,7 @@ public class WorldMapScreenController implements Initializable {
 		oceanShadeLayer = null;
 		labelLayer = null;
 		app.backToStartScreen();
+		spinner.terminate();
 	}
 	/**
 	 * Combines multiple images, from bottom to top.
