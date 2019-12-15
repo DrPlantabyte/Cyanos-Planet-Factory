@@ -1,3 +1,10 @@
+# IDE files
+.idea/*
+out/*
+build/*
+
+
+# jaVa files
 *.class
 
 # Mobile Tools for Java (J2ME)
