@@ -25,8 +25,11 @@ along with Cyano's Planet Factory.  If not, see
 
 package hall.collin.christopher.cpf;
 
+import cchall.javafx.globeviewer.GlobeViewer;
+import cchall.javafx.globeviewer.MercatorGlobeViewer;
+import cchall.javafx.globeviewer.interaction.AutoSpinWithMouse;
+import cchall.javafx.globeviewer.interaction.InteractionHandler;
 import hall.collin.christopher.cpf.data.PlanetConfig;
-import hall.collin.christopher.cpf.graphics.GlobeAnimator;
 import hall.collin.christopher.cpf.math.SphereLUT;
 import hall.collin.christopher.worldgeneration.AbstractPlanet;
 import hall.collin.christopher.worldgeneration.TectonicHydrologyPlanet;
@@ -37,6 +40,7 @@ import hall.collin.christopher.worldgeneration.graphics.VegetationPainter;
 import hall.collin.christopher.worldgeneration.math.SpherePoint;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.net.URL;
 import java.nio.file.Path;
 import java.text.NumberFormat;
@@ -48,10 +52,12 @@ import java.util.concurrent.atomic.DoubleAdder;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Point3D;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
@@ -64,7 +70,8 @@ public class WorldMapScreenController implements Initializable {
 	private App app = null;
 	
 	
-	@FXML private ImageView globeSpinner;
+//	@FXML private ImageView globeSpinner;
+	@FXML private AnchorPane globeViewPane;
 	@FXML private ImageView mapView;
 	@FXML private CheckBox biomeCheckbox;
 	@FXML private CheckBox sectorCheckbox;
@@ -103,7 +110,8 @@ public class WorldMapScreenController implements Initializable {
 	private BufferedImage oceanShadeLayer = null;
 	private BufferedImage labelLayer = null;
 	
-	GlobeAnimator spinner = null;
+	//GlobeAnimator spinner = null;
+	private GlobeViewer globeViewer = null;
 	
 	/**
 	 * Initializes the controller class.
@@ -119,6 +127,14 @@ public class WorldMapScreenController implements Initializable {
 		sectorCheckbox.onActionProperty().setValue((ActionEvent ae)->{update(ae);});
 		landShaderCheckbox.onActionProperty().setValue((ActionEvent ae)->{update(ae);});
 		oceanShaderCheckbox.onActionProperty().setValue((ActionEvent ae)->{update(ae);});
+		// globe viewer
+		globeViewer = new MercatorGlobeViewer();
+		globeViewPane.getChildren().add(globeViewer.getScene());
+		globeViewPane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+		globeViewer.getScene().heightProperty().bind(globeViewPane.heightProperty());
+		globeViewer.getScene().widthProperty().bind(globeViewPane.widthProperty());
+		InteractionHandler spinner = new AutoSpinWithMouse();
+		spinner.applyTo(globeViewer);
 		// legend
 		makeLegend(false);
 		// Export buttons
@@ -126,7 +142,32 @@ public class WorldMapScreenController implements Initializable {
 		exportGlobeButton.onActionProperty().setValue((ActionEvent ae)->{exportGlobes(ae);});
 		// TODO: fix windowing issues (add modality and enforce correct window ordering and export window close when done)
 		// TODO: foreward to sector map
-	}	
+		
+	}
+	
+	private void setGlobeTex(BufferedImage bimg){
+		Image tex = bimgToImg(globeTexture);
+		Image darker = darkenImage(tex);
+		globeViewer.diffuseTextureProperty().setValue(tex);
+		globeViewer.ambientTextureProperty().setValue(darker);
+		WritableImage specular = new WritableImage(1,1);
+		specular.getPixelWriter().setColor(0,0,Color.DARKGRAY);
+		globeViewer.specularTextureProperty().setValue(specular);
+		
+	}
+	private Image darkenImage(Image img){
+		int w = (int)img.getWidth();
+		int h = (int)img.getHeight();
+		WritableImage img2 = new WritableImage(w, h);
+		for (int y = 0; y < h; y++) {
+		for (int x = 0; x < w; x++) {
+			Color color = img.getPixelReader().getColor(x, y);
+			color = color.deriveColor(0,1,0.25,1);
+			img2.getPixelWriter().setColor(x,y,color);
+		}
+		}
+		return img2;
+	}
 	
 	public void setMapImage(BufferedImage vegetationLayer, BufferedImage landShadeLayer){
 		this.vegetationLayer = vegetationLayer;
@@ -134,8 +175,25 @@ public class WorldMapScreenController implements Initializable {
 		globeTexture = vegetationLayer;//layerImages(vegetationLayer,landShadeLayer);
 		currentMapView = layerImagesToJFX(vegetationLayer);
 		mapView.setImage(currentMapView);
-		spinner = new GlobeAnimator(globeSpinner,App.GUImapSize,globeTexture,tilt);
+		//spinner = new GlobeAnimator(globeSpinner,App.GUImapSize,globeTexture,tilt);
+		setGlobeTex(globeTexture);
 	}
+	
+	private static Image bimgToImg(BufferedImage bimg) {
+		WritableImage img = new WritableImage(bimg.getWidth(), bimg.getHeight());
+//		int[] pixelData = new int[bimg.getWidth() * bimg.getHeight()];
+//		pixelData = bimg.getRaster().getPixels(0,0,bimg.getWidth(),bimg.getHeight(),pixelData);
+//
+//		img.getPixelWriter().setPixels(0,0,bimg.getWidth(), bimg.getHeight(), PixelFormat.getIntArgbInstance(), pixelData, 0, bimg.getWidth());
+		PixelWriter pw = img.getPixelWriter();
+		for (int y = 0; y < bimg.getHeight(); y++) {
+		for (int x = 0; x < bimg.getWidth(); x++) {
+				pw.setArgb(x, y, bimg.getRGB(x, y));
+			}
+		}
+		return img;
+	}
+	
 	/**
 	 * Combines multiple images, from bottom to top.
 	 * @param layers Images to layer, with bottom image first, top image last. 
@@ -162,7 +220,7 @@ public class WorldMapScreenController implements Initializable {
 		oceanShadeLayer = null;
 		labelLayer = null;
 		app.backToStartScreen();
-		spinner.terminate();
+		//spinner.terminate();
 	}
 	/**
 	 * Combines multiple images, from bottom to top.
@@ -220,7 +278,9 @@ public class WorldMapScreenController implements Initializable {
 	void setAxisTilt(double axisTilt) {
 		tilt = axisTilt;
 		if(globeTexture != null){
-			spinner = new GlobeAnimator(globeSpinner,App.GUImapSize,globeTexture,tilt);
+			//spinner = new GlobeAnimator(globeSpinner,App.GUImapSize,globeTexture,tilt);
+			Point3D tiltVec = new Point3D(0,0,axisTilt/180*Math.PI);
+ 			globeViewer.globeRotationVector().set(tiltVec); // TODO: fix tilt
 		}
 	}
 
@@ -286,12 +346,13 @@ public class WorldMapScreenController implements Initializable {
 		if(landShadeLayer != null && landShaderCheckbox.isSelected() )	mapLayers.add(landShadeLayer);
 		
 		// update GUI
-		spinner.terminate();
+		//spinner.terminate();
 		makeLegend(biomeCheckbox.isSelected());
 		globeTexture = layerImages(mapLayers.toArray(new BufferedImage[0]));
 		currentMapView = layerImagesToJFX(mapLayers.toArray(new BufferedImage[0]));
 		mapView.setImage(currentMapView);
-		spinner = new GlobeAnimator(globeSpinner,App.GUImapSize,globeTexture,tilt);
+		//spinner = new GlobeAnimator(globeSpinner,App.GUImapSize,globeTexture,tilt);
+		setGlobeTex(globeTexture);
 	}
 
 	private void makeLegend(boolean isBiome) {
