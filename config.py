@@ -18,7 +18,7 @@ run_dir = path.join('out','run') # working directory when using the run script
 local_cache_dir = 'cache' # temporary generated files
 src_dir = 'src' # code files
 resource_dir = 'resources' # non-code files that should be included with the generated binaries
-dependency_dirs = ['lib'] # libraries (.jar files/modules)jmods_dirs = []
+dependency_dirs = ['lib'] # libraries (.jar files/modules)jmod_dirs_windows_x64 = ['D:\CCHall\Documents\Programming\JFX-SDK\openjfx-11.0.2_windows-x64_bin-jmods\javafx-jmods-11.0.2']jmod_dirs_linux_x64 = ['D:\CCHall\Documents\Programming\JFX-SDK\openjfx-11.0.2_linux-x64_bin-jmods\javafx-jmods-11.0.2']jmod_dirs_mac = ['D:\CCHall\Documents\Programming\JFX-SDK\openjfx-11.0.2_osx-x64_bin-jmods\javafx-jmods-11.0.2']jmod_dirs_linux_arm32 = [] # no javafx jmods yetjmod_dirs_linux_arm64 = [] # no javafx jmods yet
 main_class = 'hall.collin.christopher.cpf.App' # classpath for the main(...) method
 
 
@@ -55,7 +55,7 @@ def post_junit():
 # OS-specific mods
 import sys
 if 'win' in sys.platform:
-	# windows	#dependency_dirs += ['D:\\CCHall\\Documents\\Programming\\JFX-SDK\\openjfx-11.0.2_windows-x64_bin-sdk\\javafx-sdk-11.0.2\\lib']	jmods_dirs += ['D:\CCHall\Documents\Programming\JFX-SDK\openjfx-11.0.2_windows-x64_bin-jmods\javafx-jmods-11.0.2']
+	# windows
 	python_exec = 'python.exe'
 	pass
 elif 'linux' in sys.platform:
