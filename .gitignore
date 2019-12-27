@@ -3,6 +3,10 @@
 out/*
 build/*
 
+#testing files
+temp.*
+cache/*
+__pycache__/*
 
 # jaVa files
 *.class

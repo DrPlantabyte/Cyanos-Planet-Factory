@@ -38,9 +38,21 @@ import hall.collin.christopher.worldgeneration.graphics.MercatorMapProjector;
 import hall.collin.christopher.worldgeneration.graphics.PlanetPainter;
 import hall.collin.christopher.worldgeneration.graphics.VegetationPainter;
 import hall.collin.christopher.worldgeneration.math.SpherePoint;
-import java.awt.Graphics2D;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Point3D;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.net.URL;
 import java.nio.file.Path;
 import java.text.NumberFormat;
@@ -49,15 +61,6 @@ import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.DoubleAdder;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Point3D;
-import javafx.scene.control.*;
-import javafx.scene.image.*;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
