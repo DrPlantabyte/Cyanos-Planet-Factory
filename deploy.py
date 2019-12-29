@@ -103,8 +103,12 @@ def safe_quote_string(text):
 	
 	returns: text in quotes with escapes
 	"""
-	text2 = text.replace('\\', '\\\\')
-	text3 = text2.replace('"', '\"')
+	if os.sep != '\\':
+		text2 = text.replace('\\', '\\\\')
+		text3 = text2.replace('"', '\\"')
+	else:
+		text3 = text.replace('\\', '/')
+		# windows does not allow " in file names anyway
 	return '"'+text3+'"'
 def copy_tree(file_list, src_root, dest_root):
 	"""
@@ -133,22 +137,22 @@ make_dir(config.resource_dir)
 del_contents(config.run_dir)
 del_contents(config.jar_dir)
 del_contents(config.compile_dir)
-del_contents(config.deploy_dir)
 del_contents(config.deploy_image_dir)
+del_contents(config.deploy_dir)
 
 # compile (with jmods)
 for release_OS in SUPPORTED_OPERATING_SYSTEMS:
 	print('\n',release_OS,'\n')
 	module_src_path = path.join(config.src_dir, config.module_name)
 	if(release_OS == 'windows_x64'):
-		java_home = 'D:\\CCHall\\Documents\\Programming\\OpenJDK_Distros\\windows-x64\\jdk-13.0.1'
-		jmod_dirs = [java_home+os.sep+'jmods'] + config.jmod_dirs_windows_x64
+		#java_home = 'D:\\CCHall\\Documents\\Programming\\OpenJDK_Distros\\windows-x64\\jdk-13.0.1'
+		jmod_dirs = [path.join('jmods','windows')] #[path.join(java_home,'jmods')] + config.jmod_dirs_windows_x64
 	elif(release_OS == 'linux_x64'):
-		java_home = 'D:\\CCHall\\Documents\\Programming\\OpenJDK_Distros\\linux-x64\\jdk-13.0.1'
-		jmod_dirs = [java_home+os.sep+'jmods'] + config.jmod_dirs_linux_x64
+		#java_home = 'D:\\CCHall\\Documents\\Programming\\OpenJDK_Distros\\linux-x64\\jdk-13.0.1'
+		jmod_dirs = [path.join('jmods','linux')] #[path.join(java_home,'jmods')] + config.jmod_dirs_linux_x64
 	elif(release_OS == 'mac'):
-		java_home = 'D:\\CCHall\\Documents\\Programming\\OpenJDK_Distros\\osx-x64\\jdk-13.0.1'
-		jmod_dirs = [java_home+os.sep+'jmods'] + config.jmod_dirs_mac
+		#java_home = 'D:\\CCHall\\Documents\\Programming\\OpenJDK_Distros\\osx-x64\\jdk-13.0.1'
+		jmod_dirs = [path.join('jmods','mac')] #[path.join(java_home,'jmods')] + config.jmod_dirs_mac
 	else:
 		print('UNSUPPORTED OS: %s' % release_OS)
 	arg_file = path.join(config.local_cache_dir, 'javac-args.txt')
@@ -158,12 +162,13 @@ for release_OS in SUPPORTED_OPERATING_SYSTEMS:
 	command_list += ['--module-source-path', config.src_dir]
 	command_list += ['--module', config.module_name]
 	module_paths = jmod_dirs + [f for f in list_files(config.dependency_dirs) if str(f).endswith('.jar')] # a .jmod file is auto-discoverable by --module-path
-	command_list += ['--module-path',  os.pathsep.join(['%s/jmods' % java_home]+module_paths)]
+	command_list += ['--module-path', os.pathsep.join(module_paths)]
 	with open(arg_file, 'w') as fout:
 		file_content = ' '.join(map(safe_quote_string, command_list))
 		fout.write(file_content)
 		print('@%s: %s' % (arg_file, file_content))
 	call([config.javac_exec, '@'+str(arg_file)], cwd=config.root_dir)
+	print()
 	# need to copy resources separately
 	resource_files = list_files(config.resource_dir)
 	resource_files += [f for f in list_files(config.src_dir) if str(f).endswith('.java') == False]

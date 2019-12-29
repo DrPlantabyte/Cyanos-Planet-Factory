@@ -3,6 +3,9 @@
 out/*
 build/*
 
+# big binary dependencies
+jmods/*/*.jmod
+
 #testing files
 temp.*
 cache/*
