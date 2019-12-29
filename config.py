@@ -10,6 +10,7 @@ root_dir = path.dirname(path.abspath(__file__)) # change if this file is not in 
 
 #project settings
 module_name = 'cchall.cyanosplanetfactory' # module name
+module_title = 'Cyanos-Planet-Factory' # module human-readable name
 compile_dir = path.join('out','production') # intermediary compiled files (ie .class files) are sotered here
 jar_dir = path.join('out','artifacts') # compiled binaries (aka artifects) go here
 deploy_dir = path.join('out','deploy') # deployed packages go here
@@ -18,7 +19,7 @@ run_dir = path.join('out','run') # working directory when using the run script
 local_cache_dir = 'cache' # temporary generated files
 src_dir = 'src' # code files
 resource_dir = 'resources' # non-code files that should be included with the generated binaries
-dependency_dirs = ['lib'] # libraries (.jar files/modules)jmod_dirs_windows_x64 = ['D:\CCHall\Documents\Programming\JFX-SDK\openjfx-11.0.2_windows-x64_bin-jmods\javafx-jmods-11.0.2']jmod_dirs_linux_x64 = ['D:\CCHall\Documents\Programming\JFX-SDK\openjfx-11.0.2_linux-x64_bin-jmods\javafx-jmods-11.0.2']jmod_dirs_mac = ['D:\CCHall\Documents\Programming\JFX-SDK\openjfx-11.0.2_osx-x64_bin-jmods\javafx-jmods-11.0.2']jmod_dirs_linux_arm32 = [] # no javafx jmods yetjmod_dirs_linux_arm64 = [] # no javafx jmods yet
+dependency_dirs = ['lib'] # libraries (.jar files/modules)
 main_class = 'hall.collin.christopher.cpf.App' # classpath for the main(...) method
 
 
@@ -29,28 +30,6 @@ javac_exec = 'javac'
 jlink_exec = 'jlink'
 jar_exec = 'jar'
 python_exec = 'python'
-
-# hooks for custom modifications
-def pre_clean():
-	pass
-def post_clean():
-	pass
-def pre_build():
-	pass
-def post_build():
-	pass
-def pre_jar():
-	pass
-def post_jar():
-	pass
-def pre_run():
-	pass
-def post_run():
-	pass
-def pre_junit():
-	pass
-def post_junit():
-	pass
 
 # OS-specific mods
 import sys

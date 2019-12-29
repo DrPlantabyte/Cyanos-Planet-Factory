@@ -7,6 +7,7 @@ import subprocess
 from subprocess import call
 import sys
 import re
+import zipfile
 
 import config
 
@@ -122,6 +123,17 @@ def copy_tree(file_list, src_root, dest_root):
 		dst_path = path.join(dest_root, rel_path)
 		make_parent_dir(dst_path)
 		shutil.copy(f, dst_path)
+def zip_dir(dir_path, zip_path):
+	print('\nzipping %s to %s\n' % (dir_path, zip_path))
+	with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+		# zipf is zipfile handle
+		for root, dirs, files in os.walk(dir_path):
+			for file in files:
+				fname = path.basename(dir_path)
+				src_file = path.join(root, file)
+				dst_file = path.join(fname, path.relpath(src_file, dir_path) )
+				zipf.write(src_file, arcname=dst_file)
+	# done
 
 # make dirs
 make_dir(config.local_cache_dir)
@@ -189,20 +201,27 @@ for release_OS in SUPPORTED_OPERATING_SYSTEMS:
 	command_list += ['--module-path', os.pathsep.join(module_paths + [config.compile_dir])]
 	command_list += ['--add-modules', config.module_name]
 	image_dir = path.join(config.deploy_image_dir, release_OS, config.module_name)
+	command_list += ['--launcher', 'launch=%s/%s' % (config.module_name, config.main_class)]
 	command_list += ['--output', image_dir]
 	with open(arg_file, 'w') as fout:
 		file_content = ' '.join(map(safe_quote_string, command_list))
 		fout.write(file_content)
 		print('@%s: %s' % (arg_file, file_content))
 	call([config.jlink_exec, '@'+str(arg_file)], cwd=config.root_dir)
-	# launch scripts
+	# launcher
 	if release_OS == 'windows_x64':
-		with open(path.join(image_dir, 'launch.bat'), 'w') as fout:
-			fout.write('"%~dp0/bin/javaw.exe" -m '+config.module_name+'/'+config.main_class+'\r\n')
+		with open(path.join(image_dir, 'launch_%s.bat' % config.module_title),'w') as fout:	
+			fout.write('"%~dp0\\bin\\launch.bat"\r\n')
 	if release_OS == 'linux_x64':
-		with open(path.join(image_dir, 'launch.sh'), 'w') as fout:
-			fout.write('#!/bin/bash\nTHIS_DIR="`dirname "$0"`"\n"${THIS_DIR}/bin/java" -m '+config.module_name+'/'+config.main_class+'\n')
+		with open(path.join(image_dir, 'launch_%s.sh' % config.module_title),'w') as fout:	
+			fout.write('#!/bin/bash\ncd "`dirname "$0"`"\n./bin/launch\n')
 	if release_OS == 'mac':
-		with open(path.join(image_dir, 'launch.sh'), 'w') as fout:
-			fout.write('#!/bin/bash\nTHIS_DIR="`dirname "$0"`"\n"${THIS_DIR}/bin/java" -m '+config.module_name+'/'+config.main_class+'\n')
+		with open(path.join(image_dir, 'launch_%s.sh' % config.module_title),'w') as fout:	
+			fout.write('#!/bin/sh\ncd "`dirname "$0"`"\n./bin/launch\n')
+	
+	# package images
+	named_dir = path.join(config.deploy_image_dir, release_OS, config.module_title)
+	zip_file = path.join(config.deploy_image_dir, '%s_%s.zip' % (config.module_title, release_OS))
+	shutil.move(image_dir, named_dir)
+	zip_dir(dir_path=named_dir, zip_path=zip_file)
 	
