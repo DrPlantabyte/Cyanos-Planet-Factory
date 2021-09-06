@@ -1,6 +1,8 @@
 Cyano's Planet Factory
 =====================
 
+![Cyanos Planet Factory screenshot](https://cloud.githubusercontent.com/assets/1922739/3530504/2f3d4584-07a5-11e4-86e2-83c2933d1d5f.png)
+
 ## What is it?
 A JavaFX App that uses the CCH World Factory - GPL library to create planets on 
 the fly by procedural generation. Maps can be exported to .png images.
